@@ -8,9 +8,14 @@
   <style>
     html, body {
       margin: 0;
-      height: 100%;
+      padding: 0; /* Tambahan: hilangkan padding bawaan browser */
+      width: 100vw; /* Tambahan: pastikan lebar penuh */
+      height: 100vh; /* Tambahan: tinggi penuh */
       overflow: hidden;
       background: radial-gradient(circle at top left, #1e0037, #0b0c1a 70%);
+      background-repeat: no-repeat; /* Pastikan tidak ada ulangan gradasi */
+      background-attachment: fixed; /* Kunci background */
+      background-size: cover; /* Pastikan menutupi semua area */
       font-family: 'Poppins', sans-serif;
       color: #e0e7ff;
       cursor: none;
@@ -201,4 +206,4 @@
     document.getElementById('year').textContent=new Date().getFullYear();
   </script>
 </body>
-  </html>
+      </html>
