@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Yopi Ahmad Afrizal ✦ Portal Sosial</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    html, body {
+      margin: 0;
+      height: 100%;
+      overflow: hidden;
+      background: radial-gradient(circle at top left, #1e0037, #0b0c1a 70%);
+      font-family: 'Poppins', sans-serif;
+      color: #e0e7ff;
+      cursor: none;
+      touch-action: none;
+    }
+
+    * { -webkit-tap-highlight-color: transparent; outline: none !important; }
+
+    .cursor-dot {
+      position: fixed; width: 14px; height: 14px; border-radius: 50%;
+      background: radial-gradient(circle, #a78bfa, #7dd3fc);
+      pointer-events: none; mix-blend-mode: screen;
+      opacity: 0; transform: translate(-50%, -50%) scale(0.8);
+      transition: opacity 0.3s ease, transform 0.08s ease-out;
+      z-index: 9999;
+    }
+
+    .cursor-trail {
+      position: fixed; width: 18px; height: 18px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(167,139,250,0.3), rgba(125,211,252,0.1));
+      pointer-events: none; mix-blend-mode: screen; filter: blur(3px);
+      opacity: 0.8; animation: fadeTrail 0.8s ease-out forwards; z-index: 9998;
+    }
+
+    .click-ripple {
+      position: fixed; width: 36px; height: 36px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(167,139,250,0.6), rgba(125,211,252,0.2));
+      transform: translate(-50%, -50%) scale(0); opacity: 0.7;
+      pointer-events: none; mix-blend-mode: screen;
+      animation: rippleExpand 0.5s ease-out forwards; z-index: 9997;
+    }
+
+    @keyframes fadeTrail { 0%{opacity:0.8;transform:scale(1);}100%{opacity:0;transform:scale(2.5);} }
+    @keyframes rippleExpand { 0%{transform:translate(-50%,-50%)scale(0.2);opacity:0.7;}70%{opacity:0.4;}100%{transform:translate(-50%,-50%)scale(2.8);opacity:0;} }
+
+    .btn-social {
+      display:flex;align-items:center;justify-content:center;gap:.6rem;
+      padding:.75rem 1.25rem;border-radius:9999px;
+      border:1px solid rgba(255,255,255,0.08);
+      background:rgba(255,255,255,0.05);
+      backdrop-filter:blur(8px);
+      color:#e2e8f0;text-decoration:none;font-weight:500;
+      width:230px;transition:all .3s ease;
+      opacity:0;transform:translateY(30px);pointer-events:none;
+    }
+
+    .btn-social.show{opacity:1;transform:translateY(0);pointer-events:auto;transition:all .6s cubic-bezier(0.17,0.67,0.83,0.67);}
+    .btn-social:hover{background:rgba(255,255,255,0.12);box-shadow:0 0 16px rgba(167,139,250,0.3);transform:translateY(-4px)scale(1.05);}
+    .btn-social img{width:20px;height:20px;}
+
+    #mainCircle{transition:transform .25s cubic-bezier(0.22,1,0.36,1);will-change:transform;overflow:hidden;position:relative;}
+
+    /* Foto popup (klik 3x) */
+    .photo-popup {
+      position: absolute;
+      inset: -3px;
+      aspect-ratio: 1 / 1;
+      width: calc(100% + 6px);
+      height: auto;
+      border-radius: 50%;
+      background: url('./yopi.jpg') center/cover no-repeat;
+      transform: scale(0);
+      opacity: 0;
+      border: 3px solid rgba(255,255,255,0.25);
+      overflow: hidden;
+      animation: photoExpand 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+      z-index: 5;
+    }
+
+    @keyframes photoExpand {
+      0% { transform: scale(0); border-radius: 50%; opacity: 0; }
+      70% { transform: scale(1.1); border-radius: 50%; opacity: 1; }
+      100% { transform: scale(1); border-radius: 50%; opacity: 1; }
+    }
+
+    @keyframes photoShrink {
+      0% { transform: scale(1); opacity: 1; border-radius: 50%; }
+      100% { transform: scale(0); opacity: 0; border-radius: 50%; }
+    }
+
+    /* Popup QRIS */
+    #qrisPopup{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.65);backdrop-filter:blur(8px);
+      align-items:center;justify-content:center;z-index:10000;}
+    #qrisBox{background:rgba(255,255,255,0.08);border:2px solid rgba(255,255,255,0.2);border-radius:16px;padding:20px;
+      box-shadow:0 0 25px rgba(167,139,250,0.4);animation:popupAppear .4s ease-out;position:relative;}
+    @keyframes popupAppear{from{transform:scale(0.8);opacity:0;}to{transform:scale(1);opacity:1;}}
+    #qrisBox img{width:260px;height:260px;border-radius:14px;}
+    #closePopup{position:absolute;top:8px;right:10px;font-size:22px;cursor:pointer;color:#fff;
+      background:rgba(255,255,255,0.1);border-radius:50%;width:28px;height:28px;
+      display:flex;align-items:center;justify-content:center;transition:.3s;}
+    #closePopup:hover{background:rgba(255,255,255,0.3);}
+
+    footer{position:absolute;bottom:20px;width:100%;text-align:center;color:#94a3b8;font-size:.9rem;}
+  </style>
+</head>
+<body>
+  <div id="cursor" class="cursor-dot"></div>
+
+  <main class="h-full flex flex-col items-center justify-center text-center select-none">
+    <div id="mainCircle" class="w-36 h-36 flex items-center justify-center rounded-full border border-white border-opacity-10 shadow-xl bg-white bg-opacity-5 mb-6">
+      <svg width="96" height="96" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+        <defs><radialGradient id="g1" cx="50%" cy="30%">
+          <stop offset="0%" stop-color="#A78BFA"/><stop offset="100%" stop-color="#6A0DAD"/></radialGradient></defs>
+        <circle cx="60" cy="60" r="34" fill="url(#g1)" opacity="0.95"/>
+      </svg>
+    </div>
+
+    <h1 class="text-4xl md:text-5xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-indigo-500 to-blue-300">Yopi Ahmad Afrizal</h1>
+    <p class="mt-3 text-gray-300 max-w-md">Geser atau klik layar untuk membuka link sosialku ✦</p>
+
+    <div id="socialButtons" class="mt-8 flex flex-wrap justify-center gap-4">
+      <a href="https://www.instagram.com/arify.ev" target="_blank" class="btn-social"><img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png">Instagram</a>
+      <a href="https://www.threads.com/@arify.ev" target="_blank" class="btn-social"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Threads_%28app%29_logo.svg">Threads</a>
+      <a href="https://www.tiktok.com/@arify.ev" target="_blank" class="btn-social"><img src="https://cdn-icons-png.flaticon.com/512/3046/3046120.png">TikTok</a>
+<!--      <a href="https://youtube.com/@yourchannel" target="_blank" class="btn-social"><img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png">YouTube</a> -->
+      <a href="https://wa.me/628154067543" target="_blank" class="btn-social"><img src="https://cdn-icons-png.flaticon.com/512/733/733585.png">WhatsApp</a>
+      <a href="https://t.me/arifyev" target="_blank" class="btn-social"><img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png">Telegram</a>
+      <a href="https://pin.it/qsbpzru5T" target="_blank" class="btn-social"><img src="https://cdn-icons-png.flaticon.com/512/145/145808.png">Pinterest</a>
+      <button id="donateBtn" class="btn-social"><img src="https://cdn-icons-png.flaticon.com/512/1042/1042339.png">Donate / DANA</button>
+    </div>
+  </main>
+
+  <footer>made with by ovy · <span id="year"></span></footer>
+
+  <!-- Popup QRIS -->
+  <div id="qrisPopup">
+    <div id="qrisBox">
+      <div id="closePopup">×</div>
+      <img src="./qris.jpg" alt="QRIS">
+    </div>
+  </div>
+
+  <script>
+    const cursor=document.getElementById('cursor'),
+          mainCircle=document.getElementById('mainCircle'),
+          donateBtn=document.getElementById('donateBtn'),
+          qrisPopup=document.getElementById('qrisPopup'),
+          closePopup=document.getElementById('closePopup');
+    let cursorVisible=false,hideTimeout,shown=false,clickTimes=[];
+
+    document.addEventListener('pointermove',e=>{
+      const{x,y}=e;showCursor();moveCursor(x,y);createTrail(x,y);detectCollision(x,y);
+    });
+
+    document.addEventListener('pointerdown',e=>{
+      const{x,y}=e;showCursor();moveCursor(x,y);createRipple(x,y);createTrail(x,y,true);
+      cursor.style.transform='translate(-50%,-50%)scale(1.3)';
+      setTimeout(()=>cursor.style.transform='translate(-50%,-50%)scale(1)',150);
+      if(!shown)showButtons();detectCollision(x,y);
+    });
+
+    mainCircle.addEventListener('click',()=>{
+      const now=Date.now();
+      clickTimes.push(now);
+      clickTimes=clickTimes.filter(t=>now-t<600);
+      if(clickTimes.length>=3){
+        showPhotoPopup();
+        clickTimes=[];
+      }
+    });
+
+    function showPhotoPopup(){
+      const photo=document.createElement('div');
+      photo.classList.add('photo-popup');
+      mainCircle.appendChild(photo);
+      setTimeout(()=>{
+        photo.style.animation='photoShrink 0.5s ease-in forwards';
+        setTimeout(()=>photo.remove(),500);
+      },3000);
+    }
+
+    function moveCursor(x,y){cursor.style.left=`${x}px`;cursor.style.top=`${y}px`;resetHideTimer();}
+    function showCursor(){if(!cursorVisible){cursor.style.opacity=1;cursorVisible=true;}resetHideTimer();}
+    function hideCursor(){cursor.style.opacity=0;cursorVisible=false;}
+    function resetHideTimer(){clearTimeout(hideTimeout);hideTimeout=setTimeout(hideCursor,2000);}
+    function createTrail(x,y,intense=false){const t=document.createElement('div');t.classList.add('cursor-trail');
+      t.style.left=`${x-9}px`;t.style.top=`${y-9}px`;if(intense)t.style.animation='fadeTrail 1.2s ease-out forwards';
+      document.body.appendChild(t);setTimeout(()=>t.remove(),1000);}
+    function createRipple(x,y){const r=document.createElement('div');r.classList.add('click-ripple');
+      r.style.left=`${x}px`;r.style.top=`${y}px`;document.body.appendChild(r);setTimeout(()=>r.remove(),600);}
+    function detectCollision(x,y){const r=mainCircle.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2,rad=r.width/2,dx=x-cx,dy=y-cy,dist=Math.sqrt(dx*dx+dy*dy);
+      if(dist<rad+10){const a=Math.atan2(dy,dx),ox=Math.cos(a)*12,oy=Math.sin(a)*12;
+        mainCircle.style.transform=`translate(${ox}px,${oy}px)`;setTimeout(()=>mainCircle.style.transform=`translate(0,0)`,250);}}
+    function showButtons(){shown=true;document.querySelectorAll('.btn-social').forEach((b,i)=>setTimeout(()=>b.classList.add('show'),i*150));}
+
+    donateBtn.addEventListener('click',()=>{qrisPopup.style.display='flex';});
+    closePopup.addEventListener('click',()=>{qrisPopup.style.display='none';});
+    document.getElementById('year').textContent=new Date().getFullYear();
+  </script>
+</body>
+  </html>
