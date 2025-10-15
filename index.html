@@ -2,71 +2,142 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Yopi Ahmad Afrizal ✦ Portal Sosial</title>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <style>
+    /* RESET FULLSCREEN FIX */
     html, body {
       margin: 0;
-      padding: 0; /* Tambahan: hilangkan padding bawaan browser */
-      width: 100vw; /* Tambahan: pastikan lebar penuh */
-      height: 100vh; /* Tambahan: tinggi penuh */
+      padding: 0;
+      width: 100%;
+      height: 100%;
       overflow: hidden;
-      background: radial-gradient(circle at top left, #1e0037, #0b0c1a 70%);
-      background-repeat: no-repeat; /* Pastikan tidak ada ulangan gradasi */
-      background-attachment: fixed; /* Kunci background */
-      background-size: cover; /* Pastikan menutupi semua area */
       font-family: 'Poppins', sans-serif;
       color: #e0e7ff;
       cursor: none;
       touch-action: none;
+      background: none;
     }
 
-    * { -webkit-tap-highlight-color: transparent; outline: none !important; }
+    /* TRUE FULLSCREEN BACKGROUND FIX (no white edges on GitHub Pages) */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: radial-gradient(circle at top left, #1e0037, #0b0c1a 70%);
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center center;
+      z-index: -1;
+    }
+
+    * {
+      -webkit-tap-highlight-color: transparent;
+      outline: none !important;
+      box-sizing: border-box;
+    }
 
     .cursor-dot {
-      position: fixed; width: 14px; height: 14px; border-radius: 50%;
+      position: fixed;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
       background: radial-gradient(circle, #a78bfa, #7dd3fc);
-      pointer-events: none; mix-blend-mode: screen;
-      opacity: 0; transform: translate(-50%, -50%) scale(0.8);
+      pointer-events: none;
+      mix-blend-mode: screen;
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.8);
       transition: opacity 0.3s ease, transform 0.08s ease-out;
       z-index: 9999;
     }
 
     .cursor-trail {
-      position: fixed; width: 18px; height: 18px; border-radius: 50%;
+      position: fixed;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
       background: radial-gradient(circle, rgba(167,139,250,0.3), rgba(125,211,252,0.1));
-      pointer-events: none; mix-blend-mode: screen; filter: blur(3px);
-      opacity: 0.8; animation: fadeTrail 0.8s ease-out forwards; z-index: 9998;
+      pointer-events: none;
+      mix-blend-mode: screen;
+      filter: blur(3px);
+      opacity: 0.8;
+      animation: fadeTrail 0.8s ease-out forwards;
+      z-index: 9998;
     }
 
     .click-ripple {
-      position: fixed; width: 36px; height: 36px; border-radius: 50%;
+      position: fixed;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
       background: radial-gradient(circle, rgba(167,139,250,0.6), rgba(125,211,252,0.2));
-      transform: translate(-50%, -50%) scale(0); opacity: 0.7;
-      pointer-events: none; mix-blend-mode: screen;
-      animation: rippleExpand 0.5s ease-out forwards; z-index: 9997;
+      transform: translate(-50%, -50%) scale(0);
+      opacity: 0.7;
+      pointer-events: none;
+      mix-blend-mode: screen;
+      animation: rippleExpand 0.5s ease-out forwards;
+      z-index: 9997;
     }
 
-    @keyframes fadeTrail { 0%{opacity:0.8;transform:scale(1);}100%{opacity:0;transform:scale(2.5);} }
-    @keyframes rippleExpand { 0%{transform:translate(-50%,-50%)scale(0.2);opacity:0.7;}70%{opacity:0.4;}100%{transform:translate(-50%,-50%)scale(2.8);opacity:0;} }
+    @keyframes fadeTrail {
+      0% { opacity: 0.8; transform: scale(1); }
+      100% { opacity: 0; transform: scale(2.5); }
+    }
+
+    @keyframes rippleExpand {
+      0% { transform: translate(-50%, -50%) scale(0.2); opacity: 0.7; }
+      70% { opacity: 0.4; }
+      100% { transform: translate(-50%, -50%) scale(2.8); opacity: 0; }
+    }
 
     .btn-social {
-      display:flex;align-items:center;justify-content:center;gap:.6rem;
-      padding:.75rem 1.25rem;border-radius:9999px;
-      border:1px solid rgba(255,255,255,0.08);
-      background:rgba(255,255,255,0.05);
-      backdrop-filter:blur(8px);
-      color:#e2e8f0;text-decoration:none;font-weight:500;
-      width:230px;transition:all .3s ease;
-      opacity:0;transform:translateY(30px);pointer-events:none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .6rem;
+      padding: .75rem 1.25rem;
+      border-radius: 9999px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(8px);
+      color: #e2e8f0;
+      text-decoration: none;
+      font-weight: 500;
+      width: 230px;
+      transition: all .3s ease;
+      opacity: 0;
+      transform: translateY(30px);
+      pointer-events: none;
     }
 
-    .btn-social.show{opacity:1;transform:translateY(0);pointer-events:auto;transition:all .6s cubic-bezier(0.17,0.67,0.83,0.67);}
-    .btn-social:hover{background:rgba(255,255,255,0.12);box-shadow:0 0 16px rgba(167,139,250,0.3);transform:translateY(-4px)scale(1.05);}
-    .btn-social img{width:20px;height:20px;}
+    .btn-social.show {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+      transition: all .6s cubic-bezier(0.17,0.67,0.83,0.67);
+    }
 
-    #mainCircle{transition:transform .25s cubic-bezier(0.22,1,0.36,1);will-change:transform;overflow:hidden;position:relative;}
+    .btn-social:hover {
+      background: rgba(255,255,255,0.12);
+      box-shadow: 0 0 16px rgba(167,139,250,0.3);
+      transform: translateY(-4px) scale(1.05);
+    }
+
+    .btn-social img {
+      width: 20px;
+      height: 20px;
+    }
+
+    #mainCircle {
+      transition: transform .25s cubic-bezier(0.22,1,0.36,1);
+      will-change: transform;
+      overflow: hidden;
+      position: relative;
+    }
 
     /* Foto popup (klik 3x) */
     .photo-popup {
@@ -74,47 +145,93 @@
       inset: -3px;
       aspect-ratio: 1 / 1;
       width: calc(100% + 6px);
-      height: auto;
       border-radius: 50%;
       background: url('./yopi.jpg') center/cover no-repeat;
       transform: scale(0);
       opacity: 0;
       border: 3px solid rgba(255,255,255,0.25);
-      overflow: hidden;
       animation: photoExpand 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
       z-index: 5;
     }
 
     @keyframes photoExpand {
-      0% { transform: scale(0); border-radius: 50%; opacity: 0; }
-      70% { transform: scale(1.1); border-radius: 50%; opacity: 1; }
-      100% { transform: scale(1); border-radius: 50%; opacity: 1; }
+      0% { transform: scale(0); opacity: 0; border-radius: 50%; }
+      70% { transform: scale(1.1); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; border-radius: 50%; }
     }
 
     @keyframes photoShrink {
-      0% { transform: scale(1); opacity: 1; border-radius: 50%; }
-      100% { transform: scale(0); opacity: 0; border-radius: 50%; }
+      0% { transform: scale(1); opacity: 1; }
+      100% { transform: scale(0); opacity: 0; }
     }
 
     /* Popup QRIS */
-    #qrisPopup{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.65);backdrop-filter:blur(8px);
-      align-items:center;justify-content:center;z-index:10000;}
-    #qrisBox{background:rgba(255,255,255,0.08);border:2px solid rgba(255,255,255,0.2);border-radius:16px;padding:20px;
-      box-shadow:0 0 25px rgba(167,139,250,0.4);animation:popupAppear .4s ease-out;position:relative;}
-    @keyframes popupAppear{from{transform:scale(0.8);opacity:0;}to{transform:scale(1);opacity:1;}}
-    #qrisBox img{width:260px;height:260px;border-radius:14px;}
-    #closePopup{position:absolute;top:8px;right:10px;font-size:22px;cursor:pointer;color:#fff;
-      background:rgba(255,255,255,0.1);border-radius:50%;width:28px;height:28px;
-      display:flex;align-items:center;justify-content:center;transition:.3s;}
-    #closePopup:hover{background:rgba(255,255,255,0.3);}
+    #qrisPopup {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.65);
+      backdrop-filter: blur(8px);
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+    }
 
-    footer{position:absolute;bottom:20px;width:100%;text-align:center;color:#94a3b8;font-size:.9rem;}
+    #qrisBox {
+      background: rgba(255,255,255,0.08);
+      border: 2px solid rgba(255,255,255,0.2);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 0 25px rgba(167,139,250,0.4);
+      animation: popupAppear .4s ease-out;
+      position: relative;
+    }
+
+    @keyframes popupAppear {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    #qrisBox img {
+      width: 260px;
+      height: 260px;
+      border-radius: 14px;
+    }
+
+    #closePopup {
+      position: absolute;
+      top: 8px;
+      right: 10px;
+      font-size: 22px;
+      cursor: pointer;
+      color: #fff;
+      background: rgba(255,255,255,0.1);
+      border-radius: 50%;
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: 0.3s;
+    }
+
+    #closePopup:hover { background: rgba(255,255,255,0.3); }
+
+    footer {
+      position: fixed;
+      bottom: 10px;
+      width: 100%;
+      text-align: center;
+      color: #94a3b8;
+      font-size: .9rem;
+      pointer-events: none;
+    }
   </style>
 </head>
 <body>
   <div id="cursor" class="cursor-dot"></div>
 
-  <main class="h-full flex flex-col items-center justify-center text-center select-none">
+  <main class="absolute inset-0 flex flex-col items-center justify-center text-center select-none">
     <div id="mainCircle" class="w-36 h-36 flex items-center justify-center rounded-full border border-white border-opacity-10 shadow-xl bg-white bg-opacity-5 mb-6">
       <svg width="96" height="96" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
         <defs><radialGradient id="g1" cx="50%" cy="30%">
@@ -128,9 +245,8 @@
 
     <div id="socialButtons" class="mt-8 flex flex-wrap justify-center gap-4">
       <a href="https://www.instagram.com/arify.ev" target="_blank" class="btn-social"><img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png">Instagram</a>
-      <a href="https://www.threads.com/@arify.ev" target="_blank" class="btn-social"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Threads_%28app%29_logo.svg">Threads</a>
+      <a href="https://www.threads.net/@arify.ev" target="_blank" class="btn-social"><img src="https://upload.wikimedia.org/wikipedia/commons/5/50/Threads_%28app%29.png">Threads</a>
       <a href="https://www.tiktok.com/@arify.ev" target="_blank" class="btn-social"><img src="https://cdn-icons-png.flaticon.com/512/3046/3046120.png">TikTok</a>
-<!--      <a href="https://youtube.com/@yourchannel" target="_blank" class="btn-social"><img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png">YouTube</a> -->
       <a href="https://wa.me/628154067543" target="_blank" class="btn-social"><img src="https://cdn-icons-png.flaticon.com/512/733/733585.png">WhatsApp</a>
       <a href="https://t.me/arifyev" target="_blank" class="btn-social"><img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png">Telegram</a>
       <a href="https://pin.it/qsbpzru5T" target="_blank" class="btn-social"><img src="https://cdn-icons-png.flaticon.com/512/145/145808.png">Pinterest</a>
@@ -138,7 +254,7 @@
     </div>
   </main>
 
-  <footer>made with by ovy · <span id="year"></span></footer>
+  <footer>made with 💜 by ovy · <span id="year"></span></footer>
 
   <!-- Popup QRIS -->
   <div id="qrisPopup">
@@ -171,10 +287,7 @@
       const now=Date.now();
       clickTimes.push(now);
       clickTimes=clickTimes.filter(t=>now-t<600);
-      if(clickTimes.length>=3){
-        showPhotoPopup();
-        clickTimes=[];
-      }
+      if(clickTimes.length>=3){showPhotoPopup();clickTimes=[];}
     });
 
     function showPhotoPopup(){
